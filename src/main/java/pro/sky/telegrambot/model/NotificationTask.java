@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
-import java.util.Objects;
+import java.time.LocalDateTime;
 
 @Entity
 public class NotificationTask {
@@ -17,8 +17,7 @@ public class NotificationTask {
 
     private long userId;
     private String message;
-    private LocalDate notificationDateTime;
-
+    private LocalDateTime notificationDateTime;
 
     public Long getId() {
         return id;
@@ -44,24 +43,11 @@ public class NotificationTask {
         this.message = message;
     }
 
-    public LocalDate getNotificationDateTime() {
+    public LocalDateTime getNotificationDateTime() {
         return notificationDateTime;
     }
 
-    public void setNotificationDateTime(LocalDate notificationDateTime) {
+    public void setNotificationDateTime(LocalDateTime notificationDateTime) {
         this.notificationDateTime = notificationDateTime;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NotificationTask that = (NotificationTask) o;
-        return userId == that.userId && Objects.equals(id, that.id) && Objects.equals(message, that.message) && Objects.equals(notificationDateTime, that.notificationDateTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, userId, message, notificationDateTime);
     }
 }

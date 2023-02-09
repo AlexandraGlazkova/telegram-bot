@@ -1,12 +1,13 @@
 package pro.sky.telegrambot.listener;
 
+
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.component.SendHelper;
 import pro.sky.telegrambot.service.NotificationTaskService;
@@ -16,17 +17,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.regex.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
-
 
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
     private static final Logger LOG = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    private static final Pattern PATTERN = Pattern.compile("([0-9.:\\s]{16})(\\s)(\\W+)");
+    private static final Pattern PATTERN = Pattern.compile("([\\d.:\\s]{16})(\\s)([\\W+]+)");
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final TelegramBot telegramBot;
@@ -60,10 +58,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     );
                     } else {
                         Matcher matcher = PATTERN.matcher(text);
-                        LocalDateTime dateTime;
-                    if (matcher.find() &&  (dateTime = parse(matcher.group(1))) !=null) {
+                        LocalDateTime localDateTime;
+                    if (matcher.find() &&  (localDateTime = parse(matcher.group(1))) !=null) {
                         String message = matcher.group(2);
-                        notificationTaskService.create(chatId, text, dateTime);
+                        notificationTaskService.create(chatId, message, localDateTime);
                         sendHelper.sendMessage(chatId, "Задача запланирована");
                     } else {
                         sendHelper.sendMessage(chatId, "Некорректный формат сообщения!");
@@ -77,13 +75,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
    @Nullable
-    private LocalDateTime parse(String dateTime){
+    private LocalDateTime parse(String localDateTime){
         try {
-            return LocalDateTime.parse(dateTime, formatter);
+            return LocalDateTime.parse(localDateTime, formatter);
         } catch (DateTimeParseException e) {
             return null;
         }
     }
-
-
 }
