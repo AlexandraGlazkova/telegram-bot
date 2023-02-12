@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.hibernate.type.LocalTimeType.FORMATTER;
 
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
     private static final Logger LOG = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
-
-    private static final Pattern PATTERN = Pattern.compile("([\\d.:\\s]{16})(\\s)([\\W+]+)");
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final static String WELCOME_TEXT =
+            "Привет! Это планинг-бот:)! Для планирования задачи отправьте её в формате: 01.01.2022 20:00 Сделать домашнюю работу";
+    private static final Pattern PATTERN = Pattern.compile("([0-9.:\\s]{16})(\\s)([\\W+]+)");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     private final TelegramBot telegramBot;
     private final NotificationTaskService notificationTaskService;
@@ -53,11 +53,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             updates.forEach(update -> {
                 String text = update.message().text();
                 Long chatId = update.message().chat().id();
+//      Приветственное сообщение при /start
                 if ("/start".equals(text)) {
-                    sendHelper.sendMessage (chatId,
-                            "Для планирования задачи отправьте её в формате:\n**01.01.2022 20:00 Сделать домашнюю работу**",
-                            ParseMode.MarkdownV2
-                    );
+                    sendHelper.sendMessage (chatId, WELCOME_TEXT);
                     } else {
                         Matcher matcher = PATTERN.matcher(text);
                         LocalDateTime localDateTime;
