@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.hibernate.type.LocalTimeType.FORMATTER;
+
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
     private static final Logger LOG = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     private static final Pattern PATTERN = Pattern.compile("([\\d.:\\s]{16})(\\s)([\\W+]+)");
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final TelegramBot telegramBot;
     private final NotificationTaskService notificationTaskService;
@@ -77,7 +79,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
    @Nullable
     private LocalDateTime parse(String localDateTime){
         try {
-            return LocalDateTime.parse(localDateTime, formatter);
+            return LocalDateTime.parse(localDateTime, FORMATTER);
         } catch (DateTimeParseException e) {
             return null;
         }
