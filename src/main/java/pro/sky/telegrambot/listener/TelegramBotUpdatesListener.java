@@ -4,7 +4,6 @@ package pro.sky.telegrambot.listener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.ParseMode;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,8 +58,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     } else {
                         Matcher matcher = PATTERN.matcher(text);
                         LocalDateTime localDateTime;
+//       Отправление сообщения в формате "01.01.2022 20:00 Сделать домашнюю работу"
                     if (matcher.find() &&  (localDateTime = parse(matcher.group(1))) !=null) {
-                        String message = matcher.group(2);
+                        String message = matcher.group(3);
                         notificationTaskService.create(chatId, message, localDateTime);
                         sendHelper.sendMessage(chatId, "Задача запланирована");
                     } else {
